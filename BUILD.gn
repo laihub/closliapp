@@ -1,0 +1,99 @@
+# Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
+#
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file in the root of the source
+# tree. An additional intellectual property rights grant can be found
+# in the file PATENTS.  All contributing project authors may
+# be found in the AUTHORS file in the root of the source tree.
+
+import("../webrtc.gni")
+if (is_android) {
+  import("//build/config/android/config.gni")
+  import("//build/config/android/rules.gni")
+} else if (is_mac) {
+  import("//build/config/mac/rules.gni")
+} else if (is_ios) {
+  import("//build/config/ios/rules.gni")
+}
+
+group("closeliapp") {
+  # This target shall build all targets in examples.
+  testonly = true
+  public_deps = []
+
+  if (is_android) {
+    public_deps += [
+#      ":AppRTCloseli",
+      ":libnative-lib",
+    ]
+  }
+
+}
+
+if (is_android) {
+
+  rtc_shared_library("libnative-lib") {
+    testonly = true
+    sources = [
+  #    "jni/jni_onload.cc",
+  #    "jni/jni_helpers.cc",
+  #    "jni/jni_helpers.h",
+      "jni/closeli_sdk_jni.cc",
+    ]
+  
+  #  all_dependent_configs = [ ":rtc_base_approved_all_dependent_config" ]
+  
+    if (is_android) {
+      libs = [ "log" ]
+    }
+  
+  
+    suppressed_configs += [ "//build/config/android:hide_all_but_jni_onload" ]
+    configs += [ "//build/config/android:hide_all_but_jni" ]
+  
+    deps = [
+      "//webrtc/closelisdk"
+    ]
+    output_extension = "so"
+  }
+}
+
+
+#if (is_android) {
+  #android_apk("AppRTCloseli") {
+    #testonly = true
+    #apk_name = "AppRTCloseli"
+    #android_manifest = "AndroidManifest.xml"
+
+    #deps = [
+      #":AppRTCloseli_javalib",
+      #":AppRTCloseli_resources",
+    #]
+
+    #shared_libraries = [ ":libcloseli_sdk_so" ]
+  #}
+
+  #android_library("AppRTCloseli_javalib") {
+    #testonly = true
+    #android_manifest = "AndroidManifest.xml"
+
+    #java_files = [
+      #"java/com/closeli/demo/clbidirectionrenderdemo/CLBIVideoDemoActivity.java",
+      #"java/com/closeli/demo/clbidirectionrenderdemo/CLBIVideoDemoRemoteActivity.java",
+      #"java/com/closeli/demo/clbidirectionrenderdemo/MainActivity.java",
+      #"java/com/closeli/natives/CLWebRtcNativeBinder.java",
+    #]
+
+    #deps = [
+      #":AppRTCloseli_resources",
+    #]
+  #}
+
+  #android_resources("AppRTCloseli_resources") {
+    #testonly = true
+    #resource_dirs = [ "res" ]
+    #custom_package = "com.closeli.demo.clbidirectionrenderdemo"
+  #}
+#}
+
+
